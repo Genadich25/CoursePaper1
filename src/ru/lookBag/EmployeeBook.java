@@ -192,7 +192,7 @@ public class EmployeeBook {
     }
 
     public void searchMinSalary(){
-        int minSalary = 999999999;
+        int minSalary = Integer.MAX_VALUE;
         String name = "";
         for (int i = 0; i < employeeBook.length; i++) {
             if(employeeBook[i].getSalary() < minSalary){
@@ -226,21 +226,36 @@ public class EmployeeBook {
     }
 
     public void calculateAverage(){
-        System.out.println("Среднее значение зарплат: " + sumSalary() / (employeeBook.length + 1));
-        System.out.println();
+        int sum = 0;
+        int count = 0;
+        for (int i = 0; i < employeeBook.length; i++) {
+            if (employeeBook[i] != null){
+                sum = sum + employeeBook[i].getSalary();
+                count++;
+            }
+        }
+        double average = (double) sum / (double) count;
+        if (count != 0) {
+            System.out.println("Среднее значение зарплат: " + String.format("%.2f", average));
+            System.out.println();
+        } else {
+            System.out.println("В массиве нет сотрудников!");
+            System.out.println();
+        }
     }
 
     public void calculateAverage(int department){
         int sum = 0;
         int count = 0;
         for (int i = 0; i < employeeBook.length; i++) {
-            if (employeeBook[i].getDepartment() == department){
+            if (employeeBook[i].getDepartment() == department && employeeBook[i] != null){
                 sum = sum + employeeBook[i].getSalary();
                 count++;
             }
         }
+        double average = (double) sum / (double) count;
         if(count != 0){
-            System.out.println("Среднее значение зарплат в " + department + " отделе: " + sum / count);
+            System.out.println("Среднее значение зарплат в " + department + " отделе: " + String.format("%.2f", average));
             System.out.println();
         } else {
             System.out.println("В "+ department + " отделе нет сотрудников!");
@@ -342,7 +357,7 @@ public class EmployeeBook {
         Employee employee = new Employee(secondName, firstName, middleName,  department, salary);
         int countNull = 0;
         for (int i = 0; i < employeeBook.length; i++) {
-            if (employeeBook[i].getFirstName() == null && employeeBook[i].getSecondName() == null && employeeBook[i].getMiddleName() == null){
+            if (employeeBook[i].getFirstName() == null || employeeBook[i].getSecondName() == null || employeeBook[i].getMiddleName() == null){
                 employeeBook[i].setFirstName(firstName);
                 employeeBook[i].setSecondName(secondName);
                 employeeBook[i].setMiddleName(middleName);
@@ -367,12 +382,7 @@ public class EmployeeBook {
             for (int i = 0; i < employeeBook.length; i++) {
                 if(employeeBook[i].getFirstName() != null || employeeBook[i].getSecondName() != null || employeeBook[i].getMiddleName() != null){
                     if (employeeBook[i].getFullName().equals(fullName) && employeeBook[i].getId() == id){
-                        employeeBook[i].setFirstName(null);
-                        employeeBook[i].setSecondName(null);
-                        employeeBook[i].setMiddleName(null);
-                        employeeBook[i].setDepartment(0);
-                        employeeBook[i].setFullName(null);
-                        employeeBook[i].setSalary(0);
+                        employeeBook[i] = null;
                         System.out.println( fullName + " под " + id +" id удален!");
                         System.out.println();
                         break;
@@ -407,7 +417,7 @@ public class EmployeeBook {
                         employeeBook[i].setSalary(0);
                         System.out.println( fullName + " удален!");
                         System.out.println();
-                        break;
+                        return;
                     }
                 } else {
                     System.out.println( fullName + " такого сотрудника не существует!");
